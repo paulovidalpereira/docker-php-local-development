@@ -31,6 +31,27 @@ RUN docker-php-ext-install exif
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install bcmath
 
+RUN cd /tmp && curl -L https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip -O
+RUN cd /tmp && curl -L https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-sdk-linux.x64-21.6.0.0.0dbru.zip -O
+RUN cd /tmp && curl -L https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-sqlplus-linux.x64-21.6.0.0.0dbru.zip -O
+
+RUN unzip /tmp/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip -d /usr/local/
+RUN unzip /tmp/instantclient-sdk-linux.x64-21.6.0.0.0dbru.zip -d /usr/local/
+RUN unzip /tmp/instantclient-sqlplus-linux.x64-21.6.0.0.0dbru.zip -d /usr/local/
+
+RUN ln -s /usr/local/instantclient_21_6 /usr/local/instantclient
+RUN ln -s /usr/local/instantclient/lib* /usr/lib
+RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
+
+RUN echo 'instantclient,/usr/local/instantclient/' | pecl install oci8-3.2.0
+
+# Install Oracle extensions
+RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/instantclient,21.6 \
+&& docker-php-ext-install \
+        pdo_oci \
+&& docker-php-ext-enable \
+        oci8
+
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

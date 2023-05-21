@@ -1,8 +1,7 @@
 version: '3.3'
 
 services:  
-  apache-php72:
-    container_name: apache-php72
+  php72:
     build:
       context: .
       dockerfile: Dockerfile-php72
@@ -12,10 +11,9 @@ services:
     volumes:
       - "/mnt/e/www:/var/www/html"
     networks: 
-      - srv-docker-network
+      - srv-dev-network
 
-  apache-php81:
-    container_name: apache-php81
+  php81:
     build:
       context: .
       dockerfile: Dockerfile-php81
@@ -25,7 +23,7 @@ services:
     volumes:
       - "/mnt/e/www:/var/www/html"
     networks: 
-      - srv-docker-network
+      - srv-dev-network
 
   db:
     image: mysql
@@ -65,8 +63,8 @@ services:
   #   depends_on:
   #     - db
   #   networks: 
-  #     - srv-docker-network
+  #     - srv-dev-network
 
 networks:
-  srv-docker-network:
+  srv-dev-network:
     driver: bridge
