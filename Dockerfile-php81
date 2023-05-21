@@ -1,0 +1,48 @@
+FROM php:8.1-apache
+
+WORKDIR /var/www/html/
+
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+        libaio1 \
+        libzip-dev \
+        zlib1g-dev \
+        wget \
+        curl \
+        zip \
+        unzip \
+        openssl \
+        git
+
+RUN a2enmod rewrite
+
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install zip
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install soap
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install exif
+RUN docker-php-ext-install exif
+RUN docker-php-ext-install bcmath
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+COPY ./apache/virtualhosts/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+RUN curl -L https://raw.github.com/adrianharabula/php7-with-oci8/master/docker-php.conf -o /etc/apache2/conf-enabled/docker-php.conf
+
+RUN printf "log_errors = On \nerror_log = /dev/stderr\n" > /usr/local/etc/php/conf.d/php-logs.ini
+RUN echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;
+
+#RUN chown -R www-data:www-data /var/www
+
+EXPOSE 80
+
+USER $user
