@@ -9,7 +9,7 @@ services:
       - "8085:80"
     restart: always
     volumes:
-      - "/mnt/e/www:/var/www/html"
+      - ${WWW_FOLDER}:/var/www/html
     networks: 
       - srv-dev-network
 
@@ -21,7 +21,7 @@ services:
       - "8086:80"
     restart: always
     volumes:
-      - "/mnt/e/www:/var/www/html"
+      - ${WWW_FOLDER}:/var/www/html
     networks: 
       - srv-dev-network
 
