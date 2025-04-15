@@ -18,7 +18,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: 123456
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
     volumes:
       - postgresql_data:/var/lib/postgresql/data
     networks:
