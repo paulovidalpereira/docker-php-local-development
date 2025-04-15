@@ -64,6 +64,8 @@ RUN curl -L https://raw.github.com/adrianharabula/php7-with-oci8/master/docker-p
 
 RUN printf "log_errors = On \nerror_log = /dev/stderr\n" > /usr/local/etc/php/conf.d/php-logs.ini
 RUN echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;
+RUN echo 'upload_max_filesize = 100M' >> /usr/local/etc/php/conf.d/docker-php-upload-max-filesize.ini;
+RUN echo 'post_max_size = 100M' >> /usr/local/etc/php/conf.d/docker-php-post-max-size.ini;
 
 #RUN chown -R www-data:www-data /var/www
 

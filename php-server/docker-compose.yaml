@@ -1,0 +1,71 @@
+services:  
+  php7:
+    build:
+      context: .
+      dockerfile: Dockerfile-php7
+    ports:
+      - "8085:80"
+    restart: always
+    volumes:
+      - /home/paulo/www:/var/www/html
+    networks: 
+      - srv-01-network
+
+  php7.4:
+    build:
+      context: .
+      dockerfile: Dockerfile-php7.4
+    ports:
+      - "8087:80"
+    restart: always
+    volumes:
+      - /home/paulo/www:/var/www/html
+    networks: 
+      - srv-01-network
+
+  php8:
+    build:
+      context: .
+      dockerfile: Dockerfile-php8
+    ports:
+      - "8086:80"
+    restart: always
+    volumes:
+      - /home/paulo/www:/var/www/html
+    networks: 
+      - srv-01-network
+
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    # volumes:
+    #   - ./mysql/data:/var/lib/mysql
+    ports: 
+      - 3306:3306
+    networks: 
+      - srv-01-network
+
+  pgsql:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./pgsql/data:/var/lib/postgresql/data
+    networks: 
+      - srv-01-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8185:8080
+    networks: 
+      - srv-01-network
+
+networks:
+  srv-01-network:
+    driver: bridge

@@ -1,8 +1,10 @@
-FROM php:8.1-apache
+FROM php:8.3-apache
 
 WORKDIR /var/www/html/
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update
+
+RUN apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
@@ -17,19 +19,24 @@ RUN apt-get update && apt-get install -y \
         zip \
         unzip \
         openssl \
-        git
+        git \
+        libpq-dev
 
 RUN a2enmod rewrite
 
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install zip
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo_mysql mysqli
+RUN docker-php-ext-install pdo_pgsql pgsql
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install mbstring
 RUN docker-php-ext-install exif
-RUN docker-php-ext-install exif
+RUN docker-php-ext-install xml
 RUN docker-php-ext-install bcmath
+
+# RUN apt-get install -y libmagickwand-dev; \
+#         pecl install imagick; \
+#         docker-php-ext-enable imagick;
 
 RUN cd /tmp && curl -L https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip -O
 RUN cd /tmp && curl -L https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-sdk-linux.x64-21.6.0.0.0dbru.zip -O
@@ -43,13 +50,13 @@ RUN ln -s /usr/local/instantclient_21_6 /usr/local/instantclient
 RUN ln -s /usr/local/instantclient/lib* /usr/lib
 RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 
-RUN echo 'instantclient,/usr/local/instantclient/' | pecl install oci8-3.2.0
+RUN echo 'instantclient,/usr/local/instantclient/' | pecl install oci8
 
 # Install Oracle extensions
 RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/instantclient,21.6 \
-&& docker-php-ext-install \
+        && docker-php-ext-install \
         pdo_oci \
-&& docker-php-ext-enable \
+        && docker-php-ext-enable \
         oci8
 
 # Get latest Composer
